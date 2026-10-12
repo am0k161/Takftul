@@ -6,11 +6,12 @@ Designed for embedding in a music tracker on Linux handhelds (ARM Cortex-A class
 
 ## Features
 
-- WAV decode: PCM 8/16/24/32-bit integer and 32-bit float, RF64, mono mixdown
+- WAV decode: PCM 8/16/24/32-bit integer and 32-bit float, RF64, in-memory load, mono mixdown
 - Tempo via spectral-flux onset + autocorrelation, optional Ellis DP beat tracking
 - Key via HPCP / CLP chroma + Krumhansl–Schmuckler with Temperley profiles
 - Ranked alternative keys, Camelot wheel labels, confidence scores
-- High-level `analyze()`, streaming `StreamAnalyzer`, and a C API (`keeb/c_api.h`)
+- High-level `analyze()`, sectioned analysis, streaming `StreamAnalyzer`
+- C API (`keeb/c_api.h`) for C, Rust, Python, Lua FFI
 - CLI tools: `keeb`, `analyze_wav`, `bpm_probe`, `key_probe`, `run_benchmark`
 
 ## Build
@@ -56,13 +57,16 @@ keeb::AnalysisResult r = keeb::analyze(wav);
 std::printf("%s  %.1f BPM\n", keeb::to_string(r.key.key), r.tempo.bpm);
 ```
 
+From an existing float buffer:
+
+```cpp
+keeb::AnalysisResult r = keeb::analyze_buffer(samples, n_samples, sample_rate);
+```
+
 CLI (simple tester):
 
 ```bash
-# path as argument
 keeb track.wav
-
-# or run with no args and paste the path when prompted
 keeb
 ```
 
@@ -75,14 +79,30 @@ key_probe track.wav
 run_benchmark --synth /tmp/keeb-corpus
 ```
 
-See `docs/api.md` and `docs/tuning.md`.
+Embed in another CMake project:
+
+```cmake
+set(KeeB_BUILD_CLI OFF CACHE BOOL "" FORCE)
+add_subdirectory(third_party/keeb)
+target_link_libraries(my_app PRIVATE keeb)
+```
+
+## Documentation
+
+- `docs/integration.md` — embed in C++, C, CMake, Make, Rust, Python, Lua, trackers
+- `docs/api.md` — C++ public API
+- `docs/c_api.md` — C ABI
+- `docs/cli.md` — command-line tools
+- `docs/tuning.md` — parameters, octave errors, fast mode
+- `docs/dev_plan.md` — algorithms, licensing, roadmap
 
 ## Constraints (v1.0)
 
-- Offline analysis only (no streaming API)
-- WAV PCM / IEEE float only
+- WAV PCM / IEEE float / RF64 only (decode compressed formats yourself)
 - 12-TET keys only
+- Offline analysis (streaming is chunked-input, not real-time)
 - No ML, no GPU, no external DSP libraries
+- Single-threaded internally; no exceptions
 
 ## License
 
@@ -97,6 +117,7 @@ Algorithms reimplemented from published papers (not from GPL library source):
 - Ellis (2007) — DP beat tracking
 - Davies & Plumbley (2007) — autocorrelation tempo
 - Gomez (2006) — HPCP chroma
+- Muller & Ewert (2011) — chroma log pitch (CLP)
 - Krumhansl (1990), Temperley (1999, 2007) — key-finding profiles
 
 GPL/AGPL tools (libKeyFinder, aubio, Essentia) may be used as black-box output references only.
