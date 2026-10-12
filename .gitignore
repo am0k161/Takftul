@@ -1,0 +1,17 @@
+build/
+*.o
+*.a
+*.so
+analyze_wav
+bpm_probe
+key_probe
+run_benchmark
+keeb_unit_tests
+keeb_integration_tests
+.DS_Store
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+.monkeycode-tmp-files/

@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-22.04
+            cxx: g++
+          - os: macos-latest
+            cxx: clang++
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DKeeB_BUILD_CLI=ON -DKeeB_BUILD_TESTS=ON
+      - name: Build
+        run: cmake --build build -j 2
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  qemu-arm:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cross toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf qemu-user
+      - name: Cross-compile static lib
+        run: |
+          arm-linux-gnueabihf-g++ -std=c++14 -O2 -Iinclude -c src/wav_io.cpp src/dsp.cpp src/fft.cpp src/onset.cpp src/tempo.cpp src/chroma.cpp src/key.cpp src/api.cpp
+          arm-linux-gnueabihf-ar rcs libkeeb.a wav_io.o dsp.o fft.o onset.o tempo.o chroma.o key.o api.o
+          ls -l libkeeb.a
