@@ -76,6 +76,8 @@ std::vector<AnalysisResult> analyze_sections(const WavData& audio, float section
 
 `StreamAnalyzer` accepts chunked `push()` then `finish()`. See `<keeb/stream.h>`.
 
+On ARM, FFT / magnitude / window / RMS use NEON when `__ARM_NEON` is set (`-DKeeB_ENABLE_NEON=OFF` to disable).
+
 ## C API
 
 `<keeb/c_api.h>` is `extern "C"` for Rust / Python / Lua:

@@ -47,7 +47,7 @@ The remainder of this document expands on the research, algorithm choices, archi
 5. **Per-instrument analysis.** No instrument recognition, no transcription.
 6. **Multi-format input.** Only WAV (PCM 8/16/24/32-bit signed integer, 32-bit float) is supported in v1.0. FLAC / Ogg / MP3 decoding is the host application's responsibility.
 7. **Training, tuning, or model distribution.** All parameters are constants baked into the library or passed via a `Params` struct at runtime.
-8. **GPU / SIMD optimisation beyond what `-O3` and the compiler's auto-vectoriser give us.** A future NEON pass for ARM Cortex-A targets is documented but not committed for v1.0.
+8. **GPU compute.** ARM NEON kernels for FFT / magnitude / window / RMS are implemented; GPU offload is not.
 
 ---
 
@@ -875,7 +875,7 @@ The roadmap is split into four milestones. Each milestone is shippable: it produ
 **Goal:** Make the library production-grade for the tracker.
 
 **Deliverables (in priority order):**
-- ARM NEON intrinsics for the FFT and the magnitude spectrum (estimated 2–3× speedup on Cortex-A targets).
+- ARM NEON intrinsics for the FFT, magnitude spectrum, window multiply, and RMS (compile-time `__ARM_NEON`, optional `-DKeeB_ENABLE_NEON=OFF`).
 - Streaming API: `analyze_streaming(StreamSource&, Params)` that processes chunked audio. Useful for live input.
 - Additional chroma variants: CLP (chroma log pitch) as an alternative to HPCP.
 - Additional key profiles: Temperley 2007, custom user-loadable profiles.

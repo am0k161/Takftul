@@ -29,3 +29,13 @@ Internal analysis sample rate is 11025 Hz. That covers piano range for key and c
 `fft_size` 4096 / `hop_size` 512 is the default. A larger hop (2048) is faster but too coarse for tempo at 11025 Hz. Smaller FFT (2048) is faster; larger (8192) helps low-note key detection.
 
 If the in-house radix-2 RFFT is wrong or slow, rebuild with `-DKeeB_USE_KISSFFT=ON` after vendoring KissFFT into `third_party/kiss_fft/`.
+
+## ARM NEON
+
+On ARM (`__ARM_NEON`), the FFT butterflies (stages with length >= 8), magnitude spectrum, window multiply, and RMS use NEON 4-wide float kernels. Scalar code remains the fallback for tails and for non-ARM hosts.
+
+- CMake: `-DKeeB_ENABLE_NEON=ON` (default) or `OFF` to force scalar.
+- Makefile: `make NEON=0` forces scalar. 32-bit ARM: `make NEON=1 ARM_FPU=neon`.
+- aarch64 already has NEON; no extra FPU flag is required.
+
+Scratch FFT buffers are cached per thread and size so STFT frames do not reallocate every hop.

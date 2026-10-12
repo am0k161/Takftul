@@ -33,6 +33,7 @@ Options:
 - `-DKeeB_BUILD_TESTS=ON` — build unit + integration tests (default OFF)
 - `-DKeeB_USE_KISSFFT=ON` — vendor kiss_fft instead of the in-house FFT (default OFF)
 - `-DKeeB_BUILD_STATIC=ON` — produce `libkeeb.a` (default ON)
+- `-DKeeB_ENABLE_NEON=ON` — ARM NEON kernels for FFT, magnitude, window, RMS (default ON; no-op on non-ARM)
 
 ### Makefile
 
@@ -42,7 +43,7 @@ make -j cli
 make -j tests
 ```
 
-Override the compiler with `make CXX=clang++`.
+Override the compiler with `make CXX=clang++`. `make NEON=0` forces the scalar path. 32-bit ARM: `make NEON=1 ARM_FPU=neon`.
 
 ## Usage
 

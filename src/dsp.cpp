@@ -1,4 +1,5 @@
 #include <keeb/dsp.h>
+#include "simd.h"
 
 #include <cmath>
 #include <cstring>
@@ -34,7 +35,15 @@ void make_window(WindowType type, float* dst, uint32_t n) {
 }
 
 void apply_window(float* x, const float* w, uint32_t n) {
-    for (uint32_t i = 0; i < n; ++i) {
+    uint32_t i = 0;
+#if KEEB_NEON
+    for (; i + 4 <= n; i += 4) {
+        const float32x4_t xv = vld1q_f32(x + i);
+        const float32x4_t wv = vld1q_f32(w + i);
+        vst1q_f32(x + i, vmulq_f32(xv, wv));
+    }
+#endif
+    for (; i < n; ++i) {
         x[i] *= w[i];
     }
 }
@@ -123,8 +132,20 @@ float signal_rms(const float* x, uint32_t n) {
     if (!x || n == 0) {
         return 0.0f;
     }
+    uint32_t i = 0;
     double acc = 0.0;
-    for (uint32_t i = 0; i < n; ++i) {
+#if KEEB_NEON
+    float32x4_t vacc = vdupq_n_f32(0.0f);
+    for (; i + 4 <= n; i += 4) {
+        const float32x4_t v = vld1q_f32(x + i);
+        vacc = vmlaq_f32(vacc, v, v);
+    }
+    float tmp[4];
+    vst1q_f32(tmp, vacc);
+    acc = static_cast<double>(tmp[0]) + static_cast<double>(tmp[1])
+        + static_cast<double>(tmp[2]) + static_cast<double>(tmp[3]);
+#endif
+    for (; i < n; ++i) {
         acc += static_cast<double>(x[i]) * static_cast<double>(x[i]);
     }
     return static_cast<float>(std::sqrt(acc / static_cast<double>(n)));

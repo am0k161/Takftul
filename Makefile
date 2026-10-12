@@ -4,6 +4,18 @@ CXXFLAGS ?= -std=c++14 -O2 -Wall -Wextra -pedantic
 CPPFLAGS  = -Iinclude -Idata
 LDFLAGS  ?=
 
+# NEON=0 disables kernels. NEON=1 enables them when the compiler defines __ARM_NEON.
+# 32-bit ARM cross-builds need an FPU flag, e.g. make NEON=1 ARM_FPU=neon CXX=arm-linux-gnueabihf-g++
+ifeq ($(NEON),0)
+CPPFLAGS += -DKEEB_ENABLE_NEON=0
+endif
+ifeq ($(NEON),1)
+CPPFLAGS += -DKEEB_ENABLE_NEON=1
+endif
+ifneq ($(ARM_FPU),)
+CXXFLAGS += -mfpu=$(ARM_FPU)
+endif
+
 SRC = src/wav_io.cpp src/dsp.cpp src/fft.cpp src/onset.cpp \
       src/tempo.cpp src/chroma.cpp src/key.cpp src/api.cpp \
       src/stream.cpp src/c_api.cpp

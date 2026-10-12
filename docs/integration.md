@@ -362,6 +362,8 @@ Copy the relevant prototypes from `include/keeb/c_api.h` into `ffi.cdef`.
 - No exceptions, no RTTI requirement, no `dynamic_cast`.
 - Working set (excluding the input buffer) is bounded: FFT buffer, onset envelope,
   chroma matrix. See the development plan in `docs/dev_plan.md` for the 4-minute budget.
+- ARM builds use NEON for FFT butterflies, magnitude, windowing, and RMS when
+  `__ARM_NEON` is set. Disable with `-DKeeB_ENABLE_NEON=OFF` or `make NEON=0`.
 
 ---
 

@@ -167,6 +167,18 @@ UTEST(dsp, window_hann_ends) {
     ASSERT_TRUE(w[n / 2] > 0.9f);
 }
 
+UTEST(dsp, apply_window_and_rms) {
+    const uint32_t n = 7;
+    std::vector<float> x(n, 2.0f);
+    std::vector<float> w(n, 0.5f);
+    apply_window(x.data(), w.data(), n);
+    for (uint32_t i = 0; i < n; ++i) {
+        ASSERT_TRUE(std::fabs(x[i] - 1.0f) < 1e-6f);
+    }
+    const float rms = signal_rms(x.data(), n);
+    ASSERT_TRUE(std::fabs(rms - 1.0f) < 1e-5f);
+}
+
 UTEST(dsp, downsample) {
     std::vector<float> in(44100, 1.0f);
     std::vector<float> out;

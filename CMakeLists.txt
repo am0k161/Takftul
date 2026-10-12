@@ -9,6 +9,7 @@ option(KeeB_BUILD_CLI "Build CLI tools" OFF)
 option(KeeB_BUILD_TESTS "Build unit and integration tests" OFF)
 option(KeeB_USE_KISSFFT "Use vendored kiss_fft instead of in-house FFT" OFF)
 option(KeeB_BUILD_STATIC "Build static library" ON)
+option(KeeB_ENABLE_NEON "ARM NEON kernels for FFT, magnitude, window, RMS" ON)
 
 set(KEEB_SOURCES
     src/wav_io.cpp
@@ -42,6 +43,17 @@ target_include_directories(keeb
 if(KeeB_USE_KISSFFT)
     target_compile_definitions(keeb PRIVATE KEEB_USE_KISSFFT=1)
     target_include_directories(keeb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/kiss_fft)
+endif()
+
+if(KeeB_ENABLE_NEON)
+    target_compile_definitions(keeb PRIVATE KEEB_ENABLE_NEON=1)
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm|ARM)" AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64|AARCH64")
+        if(NOT MSVC)
+            target_compile_options(keeb PRIVATE -mfpu=neon)
+        endif()
+    endif()
+else()
+    target_compile_definitions(keeb PRIVATE KEEB_ENABLE_NEON=0)
 endif()
 
 if(MSVC)
