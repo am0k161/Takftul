@@ -2,6 +2,7 @@ build/
 *.o
 *.a
 *.so
+keeb
 analyze_wav
 bpm_probe
 key_probe

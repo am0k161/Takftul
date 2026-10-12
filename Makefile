@@ -21,7 +21,10 @@ libkeeb.a: $(OBJ)
 src/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
 
-cli: lib analyze_wav bpm_probe key_probe run_benchmark
+cli: lib keeb analyze_wav bpm_probe key_probe run_benchmark
+
+keeb: cli/keeb.cpp libkeeb.a
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -Icli $< -o $@ libkeeb.a $(LDFLAGS)
 
 analyze_wav: cli/analyze_wav.cpp libkeeb.a
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -Icli $< -o $@ libkeeb.a $(LDFLAGS)
@@ -46,4 +49,4 @@ keeb_integration_tests: tests/integration/test_integration.cpp libkeeb.a
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -Ithird_party -Itests/unit -Itests/integration $< -o $@ libkeeb.a $(LDFLAGS)
 
 clean:
-	rm -f $(OBJ) libkeeb.a analyze_wav bpm_probe key_probe run_benchmark keeb_unit_tests keeb_integration_tests
+	rm -f $(OBJ) libkeeb.a keeb analyze_wav bpm_probe key_probe run_benchmark keeb_unit_tests keeb_integration_tests

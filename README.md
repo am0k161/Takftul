@@ -11,7 +11,7 @@ Designed for embedding in a music tracker on Linux handhelds (ARM Cortex-A class
 - Key via HPCP / CLP chroma + Krumhansl–Schmuckler with Temperley profiles
 - Ranked alternative keys, Camelot wheel labels, confidence scores
 - High-level `analyze()`, streaming `StreamAnalyzer`, and a C API (`keeb/c_api.h`)
-- CLI tools: `analyze_wav`, `bpm_probe`, `key_probe`, `run_benchmark`
+- CLI tools: `keeb`, `analyze_wav`, `bpm_probe`, `key_probe`, `run_benchmark`
 
 ## Build
 
@@ -56,7 +56,17 @@ keeb::AnalysisResult r = keeb::analyze(wav);
 std::printf("%s  %.1f BPM\n", keeb::to_string(r.key.key), r.tempo.bpm);
 ```
 
-CLI:
+CLI (simple tester):
+
+```bash
+# path as argument
+keeb track.wav
+
+# or run with no args and paste the path when prompted
+keeb
+```
+
+More tools:
 
 ```bash
 analyze_wav --json track.wav

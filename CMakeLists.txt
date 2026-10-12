@@ -57,6 +57,11 @@ set_target_properties(keeb PROPERTIES
 )
 
 if(KeeB_BUILD_CLI)
+    add_executable(keeb_cli cli/keeb.cpp)
+    target_link_libraries(keeb_cli PRIVATE keeb)
+    target_include_directories(keeb_cli PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cli)
+    set_target_properties(keeb_cli PROPERTIES OUTPUT_NAME keeb)
+
     add_executable(analyze_wav cli/analyze_wav.cpp)
     target_link_libraries(analyze_wav PRIVATE keeb)
     target_include_directories(analyze_wav PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cli)
@@ -76,7 +81,7 @@ if(KeeB_BUILD_CLI)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/unit
     )
 
-    install(TARGETS analyze_wav bpm_probe key_probe run_benchmark RUNTIME DESTINATION bin)
+    install(TARGETS keeb_cli analyze_wav bpm_probe key_probe run_benchmark RUNTIME DESTINATION bin)
 endif()
 
 if(KeeB_BUILD_TESTS)
