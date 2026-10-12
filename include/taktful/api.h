@@ -1,13 +1,13 @@
-#ifndef KEEB_API_H
-#define KEEB_API_H
+#ifndef TAKTFUL_API_H
+#define TAKTFUL_API_H
 
 #include <cstdint>
 #include <vector>
 
-#include <keeb/version.h>
-#include <keeb/wav_io.h>
+#include <taktful/version.h>
+#include <taktful/wav_io.h>
 
-namespace keeb {
+namespace taktful {
 
 struct Params {
     uint32_t fft_size = 4096;
@@ -90,6 +90,6 @@ IntermediateFeatures compute_features(const WavData& audio, const Params& params
 
 bool validate_params(Params& params);
 
-} // namespace keeb
+} // namespace taktful
 
 #endif

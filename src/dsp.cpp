@@ -1,4 +1,4 @@
-#include <keeb/dsp.h>
+#include <taktful/dsp.h>
 #include "simd.h"
 
 #include <cmath>
@@ -8,7 +8,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace keeb {
+namespace taktful {
 
 void make_window(WindowType type, float* dst, uint32_t n) {
     if (n == 0) {
@@ -36,7 +36,7 @@ void make_window(WindowType type, float* dst, uint32_t n) {
 
 void apply_window(float* x, const float* w, uint32_t n) {
     uint32_t i = 0;
-#if KEEB_NEON
+#if TAKTFUL_NEON
     for (; i + 4 <= n; i += 4) {
         const float32x4_t xv = vld1q_f32(x + i);
         const float32x4_t wv = vld1q_f32(w + i);
@@ -134,7 +134,7 @@ float signal_rms(const float* x, uint32_t n) {
     }
     uint32_t i = 0;
     double acc = 0.0;
-#if KEEB_NEON
+#if TAKTFUL_NEON
     float32x4_t vacc = vdupq_n_f32(0.0f);
     for (; i + 4 <= n; i += 4) {
         const float32x4_t v = vld1q_f32(x + i);
@@ -151,4 +151,4 @@ float signal_rms(const float* x, uint32_t n) {
     return static_cast<float>(std::sqrt(acc / static_cast<double>(n)));
 }
 
-} // namespace keeb
+} // namespace taktful

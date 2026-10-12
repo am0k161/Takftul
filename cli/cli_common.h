@@ -1,15 +1,15 @@
-#ifndef KEEB_CLI_COMMON_H
-#define KEEB_CLI_COMMON_H
+#ifndef TAKTFUL_CLI_COMMON_H
+#define TAKTFUL_CLI_COMMON_H
 
-#include <keeb/api.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/wav_io.h>
 
 #include <cstdio>
 #include <cstring>
 #include <string>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 namespace cli {
 
 inline int wav_error_to_exit(WavError e) {
@@ -96,6 +96,6 @@ inline std::string json_escape(const std::string& s) {
 }
 
 } // namespace cli
-} // namespace keeb
+} // namespace taktful
 
 #endif

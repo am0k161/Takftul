@@ -1,22 +1,22 @@
 #include "cli_common.h"
 
-#include <keeb/api.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/wav_io.h>
 
 #include <cstdio>
 #include <cstring>
 #include <string>
 
-using namespace keeb;
-using namespace keeb::cli;
+using namespace taktful;
+using namespace taktful::cli;
 
 static void usage() {
     std::fprintf(stderr,
-        "keeb — analyze a WAV file for key and BPM\n"
+        "taktful — analyze a WAV file for key and BPM\n"
         "\n"
         "Usage:\n"
-        "  keeb [path-to-wav]\n"
-        "  keeb\n"
+        "  taktful [path-to-wav]\n"
+        "  taktful\n"
         "\n"
         "With no argument, prompts for a file path.\n");
 }

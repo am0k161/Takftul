@@ -1,4 +1,4 @@
-#include <keeb/dsp.h>
+#include <taktful/dsp.h>
 #include "simd.h"
 
 #include <cmath>
@@ -10,7 +10,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace keeb {
+namespace taktful {
 namespace {
 
 uint32_t reverse_bits(uint32_t x, uint32_t bits) {
@@ -110,7 +110,7 @@ void butterfly_scalar(float* re,
     }
 }
 
-#if KEEB_NEON
+#if TAKTFUL_NEON
 void butterfly_neon(float* re,
                     float* im,
                     const float* wr,
@@ -175,7 +175,7 @@ void butterfly_neon(float* re,
 }
 #endif
 
-#if KEEB_NEON
+#if TAKTFUL_NEON
 float32x4_t vsqrtq_f32_compat(float32x4_t s) {
 #if defined(__aarch64__)
     return vsqrtq_f32(s);
@@ -191,7 +191,7 @@ float32x4_t vsqrtq_f32_compat(float32x4_t s) {
 
 void mag_spectrum(const float* re, const float* im, float* mag_out, uint32_t bins) {
     uint32_t k = 0;
-#if KEEB_NEON
+#if TAKTFUL_NEON
     for (; k + 4 <= bins; k += 4) {
         const float32x4_t r = vld1q_f32(re + k);
         const float32x4_t m = vld1q_f32(im + k);
@@ -208,7 +208,7 @@ void cfft_inplace(float* re, float* im, const FftPlan& plan) {
     const uint32_t n = plan.n;
     bit_reverse(re, im, plan.rev.data(), n);
     for (uint32_t len = 2; len <= n; len <<= 1) {
-#if KEEB_NEON
+#if TAKTFUL_NEON
         if (len >= 8) {
             butterfly_neon(re, im, plan.wr.data(), plan.wi.data(), n, len);
             continue;
@@ -232,4 +232,4 @@ void rfft_mag(const float* in, float* mag_out, uint32_t n) {
     mag_spectrum(plan.re.data(), plan.im.data(), mag_out, n / 2 + 1);
 }
 
-} // namespace keeb
+} // namespace taktful

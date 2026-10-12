@@ -1,10 +1,10 @@
-#include <keeb/tempo.h>
+#include <taktful/tempo.h>
 
 #include <algorithm>
 #include <cmath>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 namespace {
 
 std::vector<float> resample_envelope(const std::vector<float>& env, float hop_sec, float dt) {
@@ -304,4 +304,4 @@ TempoResult estimate_tempo(const std::vector<float>& onset_env,
     return estimate_tempo_debug(onset_env, hop_sec, params).result;
 }
 
-} // namespace keeb
+} // namespace taktful

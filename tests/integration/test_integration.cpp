@@ -1,17 +1,17 @@
 #include "utest.h"
 #include "wav_writer.h"
 
-#include <keeb/api.h>
-#include <keeb/c_api.h>
-#include <keeb/stream.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/c_api.h>
+#include <taktful/stream.h>
+#include <taktful/wav_io.h>
 
 #include <cmath>
 #include <string>
 #include <vector>
 
-using namespace keeb;
-using namespace keeb::test;
+using namespace taktful;
+using namespace taktful::test;
 
 UTEST(integration, analyze_click_and_tone) {
     WavData w;
@@ -54,7 +54,7 @@ UTEST(integration, one_second_file) {
 }
 
 UTEST(integration, roundtrip_wav_analyze) {
-    const std::string path = tmp_path("keeb_int_roundtrip.wav");
+    const std::string path = tmp_path("taktful_int_roundtrip.wav");
     std::vector<float> x = click_track(90.0f, 22050.0f, 6.0f);
     ASSERT_TRUE(write_pcm16_wav(path.c_str(), x, 22050));
     WavData w;
@@ -77,19 +77,19 @@ UTEST(integration, features_match_analyze_length) {
 }
 
 UTEST(integration, c_api_load_and_analyze) {
-    const std::string path = tmp_path("keeb_int_capi.wav");
+    const std::string path = tmp_path("taktful_int_capi.wav");
     std::vector<float> x = click_track(120.0f, 22050.0f, 6.0f);
     ASSERT_TRUE(write_pcm16_wav(path.c_str(), x, 22050));
-    keeb_wav wav;
-    ASSERT_EQ(keeb_load_wav(path.c_str(), &wav), KEEB_OK);
-    keeb_params p;
-    keeb_params_default(&p);
+    taktful_wav wav;
+    ASSERT_EQ(taktful_load_wav(path.c_str(), &wav), TAKTFUL_OK);
+    taktful_params p;
+    taktful_params_default(&p);
     p.enable_dp_refinement = 0;
-    keeb_result r;
-    ASSERT_EQ(keeb_analyze(&wav, &p, &r), KEEB_OK);
+    taktful_result r;
+    ASSERT_EQ(taktful_analyze(&wav, &p, &r), TAKTFUL_OK);
     ASSERT_TRUE(r.bpm > 50.0f);
-    keeb_result_free(&r);
-    keeb_wav_free(&wav);
+    taktful_result_free(&r);
+    taktful_wav_free(&wav);
 }
 
 UTEST_MAIN()

@@ -1,10 +1,10 @@
-#ifndef KEEB_STREAM_H
-#define KEEB_STREAM_H
+#ifndef TAKTFUL_STREAM_H
+#define TAKTFUL_STREAM_H
 
 #include <cstddef>
-#include <keeb/api.h>
+#include <taktful/api.h>
 
-namespace keeb {
+namespace taktful {
 
 class StreamAnalyzer {
 public:
@@ -45,6 +45,6 @@ std::vector<AnalysisResult> analyze_sections(const WavData& audio,
                                              float section_sec,
                                              const Params& params = Params());
 
-} // namespace keeb
+} // namespace taktful
 
 #endif

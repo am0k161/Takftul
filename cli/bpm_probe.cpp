@@ -1,17 +1,17 @@
 #include "cli_common.h"
 
-#include <keeb/api.h>
-#include <keeb/dsp.h>
-#include <keeb/onset.h>
-#include <keeb/tempo.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/dsp.h>
+#include <taktful/onset.h>
+#include <taktful/tempo.h>
+#include <taktful/wav_io.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-using namespace keeb;
-using namespace keeb::cli;
+using namespace taktful;
+using namespace taktful::cli;
 
 static void usage() {
     std::fprintf(stderr,

@@ -1,10 +1,10 @@
-#ifndef KEEB_DSP_H
-#define KEEB_DSP_H
+#ifndef TAKTFUL_DSP_H
+#define TAKTFUL_DSP_H
 
 #include <cstdint>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 
 enum class WindowType {
     Hann,
@@ -44,6 +44,6 @@ int midi_to_pitch_class(float midi);
 
 float signal_rms(const float* x, uint32_t n);
 
-} // namespace keeb
+} // namespace taktful
 
 #endif

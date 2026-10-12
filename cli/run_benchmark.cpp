@@ -1,8 +1,8 @@
 #include "cli_common.h"
 #include "../tests/unit/wav_writer.h"
 
-#include <keeb/api.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/wav_io.h>
 
 #include <cmath>
 #include <cstdio>
@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
-using namespace keeb;
-using namespace keeb::cli;
-using namespace keeb::test;
+using namespace taktful;
+using namespace taktful::cli;
+using namespace taktful::test;
 
 struct Case {
     std::string path;

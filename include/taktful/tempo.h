@@ -1,9 +1,9 @@
-#ifndef KEEB_TEMPO_H
-#define KEEB_TEMPO_H
+#ifndef TAKTFUL_TEMPO_H
+#define TAKTFUL_TEMPO_H
 
-#include <keeb/api.h>
+#include <taktful/api.h>
 
-namespace keeb {
+namespace taktful {
 
 struct TempoDebug {
     TempoResult result;
@@ -22,6 +22,6 @@ TempoResult estimate_tempo(const std::vector<float>& onset_env,
                            float hop_sec,
                            const Params& params);
 
-} // namespace keeb
+} // namespace taktful
 
 #endif

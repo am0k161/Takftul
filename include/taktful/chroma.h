@@ -1,9 +1,9 @@
-#ifndef KEEB_CHROMA_H
-#define KEEB_CHROMA_H
+#ifndef TAKTFUL_CHROMA_H
+#define TAKTFUL_CHROMA_H
 
-#include <keeb/api.h>
+#include <taktful/api.h>
 
-namespace keeb {
+namespace taktful {
 
 std::vector<std::vector<float> > compute_chroma(const std::vector<std::vector<float> >& mag_frames,
                                                 uint32_t fft_size,
@@ -12,6 +12,6 @@ std::vector<std::vector<float> > compute_chroma(const std::vector<std::vector<fl
 
 std::vector<float> aggregate_pcp(const std::vector<std::vector<float> >& chroma);
 
-} // namespace keeb
+} // namespace taktful
 
 #endif

@@ -251,7 +251,7 @@ UTEST_WEAK UTEST_UNUSED struct utest_state_s utest_state;
     size_t failed_testcases_length = 0;                                        \
     (void)argc;                                                                \
     (void)argv;                                                                \
-    printf("keeb tests\n");                                                    \
+    printf("taktful tests\n");                                                    \
     for (index = 0; index < utest_state.tests_length; ++index) {               \
       int result = 0;                                                          \
       printf("[ RUN      ] %s\n", utest_state.tests[index].name);              \

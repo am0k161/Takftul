@@ -1,6 +1,6 @@
 # CLI tools
 
-All tools are built with `-DKeeB_BUILD_CLI=ON` (CMake) or `make cli` (Makefile).
+All tools are built with `-DTaktful_BUILD_CLI=ON` (CMake) or `make cli` (Makefile).
 Binaries land in `build/` (CMake) or the repo root (Makefile).
 
 Exit codes (shared):
@@ -19,13 +19,13 @@ Input: PCM WAV (8/16/24/32-bit integer or 32-bit float), including RF64. Stereo 
 
 ---
 
-## `keeb` — simple tester
+## `taktful` — simple tester
 
 Interactive one-shot analysis. Path as an argument, or prompt if omitted.
 
 ```bash
-keeb track.wav
-keeb
+taktful track.wav
+taktful
 ```
 
 Plain-text output:

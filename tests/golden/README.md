@@ -24,8 +24,8 @@ Unit tests in `tests/unit` generate synthetic click tracks and triads on the fly
 Generate a local synthetic corpus and score it:
 
 ```bash
-mkdir -p /tmp/keeb-corpus
-run_benchmark --synth --no-dp /tmp/keeb-corpus
+mkdir -p /tmp/taktful-corpus
+run_benchmark --synth --no-dp /tmp/taktful-corpus
 ```
 
 For Extended Ballroom / MTG Key, point `run_benchmark` at a directory of WAV files each paired with a `.expected.json` containing `"bpm"` and/or `"key"`.

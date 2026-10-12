@@ -1,6 +1,6 @@
-# keeb public API
+# taktful public API
 
-Include either the umbrella header `<keeb/keeb.h>` or individual module headers.
+Include either the umbrella header `<taktful/taktful.h>` or individual module headers.
 
 ## Types
 
@@ -74,32 +74,32 @@ std::vector<AnalysisResult> analyze_sections(const WavData& audio, float section
 
 `compute_features()` returns per-hop onset envelope and 12-bin chroma for visualisation.
 
-`StreamAnalyzer` accepts chunked `push()` then `finish()`. See `<keeb/stream.h>`.
+`StreamAnalyzer` accepts chunked `push()` then `finish()`. See `<taktful/stream.h>`.
 
-On ARM, FFT / magnitude / window / RMS use NEON when `__ARM_NEON` is set (`-DKeeB_ENABLE_NEON=OFF` to disable).
+On ARM, FFT / magnitude / window / RMS use NEON when `__ARM_NEON` is set (`-DTaktful_ENABLE_NEON=OFF` to disable).
 
 ## C API
 
-`<keeb/c_api.h>` is `extern "C"` for Rust / Python / Lua:
+`<taktful/c_api.h>` is `extern "C"` for Rust / Python / Lua:
 
 ```c
-keeb_wav wav;
-keeb_load_wav("track.wav", &wav);
-keeb_params p;
-keeb_params_default(&p);
-keeb_result r;
-keeb_analyze(&wav, &p, &r);
-keeb_result_free(&r);
-keeb_wav_free(&wav);
+taktful_wav wav;
+taktful_load_wav("track.wav", &wav);
+taktful_params p;
+taktful_params_default(&p);
+taktful_result r;
+taktful_analyze(&wav, &p, &r);
+taktful_result_free(&r);
+taktful_wav_free(&wav);
 ```
 
-Streaming: `keeb_stream_create` / `keeb_stream_push` / `keeb_stream_finish` / `keeb_stream_destroy`.
+Streaming: `taktful_stream_create` / `taktful_stream_push` / `taktful_stream_finish` / `taktful_stream_destroy`.
 
 ## Embedding
 
 ```cmake
-add_subdirectory(third_party/keeb)
-target_link_libraries(tracker PRIVATE keeb)
+add_subdirectory(third_party/taktful)
+target_link_libraries(tracker PRIVATE taktful)
 ```
 
-The library is a static archive by default (`libkeeb.a`).
+The library is a static archive by default (`libtaktful.a`).

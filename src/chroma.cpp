@@ -1,5 +1,5 @@
-#include <keeb/chroma.h>
-#include <keeb/dsp.h>
+#include <taktful/chroma.h>
+#include <taktful/dsp.h>
 
 #include <algorithm>
 #include <cmath>
@@ -9,7 +9,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace keeb {
+namespace taktful {
 namespace {
 
 void spectral_whiten(std::vector<float>& mag, uint32_t fft_size, uint32_t sample_rate) {
@@ -211,4 +211,4 @@ std::vector<float> aggregate_pcp(const std::vector<std::vector<float> >& chroma)
     return pcp;
 }
 
-} // namespace keeb
+} // namespace taktful

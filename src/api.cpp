@@ -1,11 +1,11 @@
-#include <keeb/api.h>
-#include <keeb/chroma.h>
-#include <keeb/dsp.h>
-#include <keeb/key.h>
-#include <keeb/onset.h>
-#include <keeb/tempo.h>
+#include <taktful/api.h>
+#include <taktful/chroma.h>
+#include <taktful/dsp.h>
+#include <taktful/key.h>
+#include <taktful/onset.h>
+#include <taktful/tempo.h>
 
-namespace keeb {
+namespace taktful {
 
 bool validate_params(Params& params) {
     if (!is_power_of_two(params.fft_size) ||
@@ -121,4 +121,4 @@ IntermediateFeatures compute_features(const WavData& audio, const Params& params
     return feat;
 }
 
-} // namespace keeb
+} // namespace taktful

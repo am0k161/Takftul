@@ -1,8 +1,8 @@
 #include "cli_common.h"
 
-#include <keeb/api.h>
-#include <keeb/dsp.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/dsp.h>
+#include <taktful/wav_io.h>
 
 #include <chrono>
 #include <cmath>
@@ -15,8 +15,8 @@
 #include <malloc.h>
 #endif
 
-using namespace keeb;
-using namespace keeb::cli;
+using namespace taktful;
+using namespace taktful::cli;
 
 static void usage() {
     std::fprintf(stderr,

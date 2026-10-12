@@ -1,4 +1,4 @@
-# keeb
+# taktful
 
 Lightweight MIT-licensed C++14 library for musical **key** and **BPM** detection from WAV files.
 
@@ -11,8 +11,8 @@ Designed for embedding in a music tracker on Linux handhelds (ARM Cortex-A class
 - Key via HPCP / CLP chroma + Krumhansl–Schmuckler with Temperley profiles
 - Ranked alternative keys, Camelot wheel labels, confidence scores
 - High-level `analyze()`, sectioned analysis, streaming `StreamAnalyzer`
-- C API (`keeb/c_api.h`) for C, Rust, Python, Lua FFI
-- CLI tools: `keeb`, `analyze_wav`, `bpm_probe`, `key_probe`, `run_benchmark`
+- C API (`taktful/c_api.h`) for C, Rust, Python, Lua FFI
+- CLI tools: `taktful`, `analyze_wav`, `bpm_probe`, `key_probe`, `run_benchmark`
 
 ## Build
 
@@ -22,18 +22,18 @@ C++14 compiler required. CMake (primary) or a standalone Makefile.
 
 ```bash
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DKeeB_BUILD_CLI=ON -DKeeB_BUILD_TESTS=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DTaktful_BUILD_CLI=ON -DTaktful_BUILD_TESTS=ON
 cmake --build . -j
 ctest --output-on-failure
 ```
 
 Options:
 
-- `-DKeeB_BUILD_CLI=ON` — build CLI tools including `run_benchmark` (default OFF)
-- `-DKeeB_BUILD_TESTS=ON` — build unit + integration tests (default OFF)
-- `-DKeeB_USE_KISSFFT=ON` — vendor kiss_fft instead of the in-house FFT (default OFF)
-- `-DKeeB_BUILD_STATIC=ON` — produce `libkeeb.a` (default ON)
-- `-DKeeB_ENABLE_NEON=ON` — ARM NEON kernels for FFT, magnitude, window, RMS (default ON; no-op on non-ARM)
+- `-DTaktful_BUILD_CLI=ON` — build CLI tools including `run_benchmark` (default OFF)
+- `-DTaktful_BUILD_TESTS=ON` — build unit + integration tests (default OFF)
+- `-DTaktful_USE_KISSFFT=ON` — vendor kiss_fft instead of the in-house FFT (default OFF)
+- `-DTaktful_BUILD_STATIC=ON` — produce `libtaktful.a` (default ON)
+- `-DTaktful_ENABLE_NEON=ON` — ARM NEON kernels for FFT, magnitude, window, RMS (default ON; no-op on non-ARM)
 
 ### Makefile
 
@@ -48,27 +48,27 @@ Override the compiler with `make CXX=clang++`. `make NEON=0` forces the scalar p
 ## Usage
 
 ```cpp
-#include <keeb/keeb.h>
+#include <taktful/taktful.h>
 
-keeb::WavData wav;
-if (keeb::load_wav("track.wav", wav) != keeb::WavError::OK) {
+taktful::WavData wav;
+if (taktful::load_wav("track.wav", wav) != taktful::WavError::OK) {
     return 1;
 }
-keeb::AnalysisResult r = keeb::analyze(wav);
-std::printf("%s  %.1f BPM\n", keeb::to_string(r.key.key), r.tempo.bpm);
+taktful::AnalysisResult r = taktful::analyze(wav);
+std::printf("%s  %.1f BPM\n", taktful::to_string(r.key.key), r.tempo.bpm);
 ```
 
 From an existing float buffer:
 
 ```cpp
-keeb::AnalysisResult r = keeb::analyze_buffer(samples, n_samples, sample_rate);
+taktful::AnalysisResult r = taktful::analyze_buffer(samples, n_samples, sample_rate);
 ```
 
 CLI (simple tester):
 
 ```bash
-keeb track.wav
-keeb
+taktful track.wav
+taktful
 ```
 
 More tools:
@@ -77,15 +77,15 @@ More tools:
 analyze_wav --json track.wav
 bpm_probe track.wav
 key_probe track.wav
-run_benchmark --synth /tmp/keeb-corpus
+run_benchmark --synth /tmp/taktful-corpus
 ```
 
 Embed in another CMake project:
 
 ```cmake
-set(KeeB_BUILD_CLI OFF CACHE BOOL "" FORCE)
-add_subdirectory(third_party/keeb)
-target_link_libraries(my_app PRIVATE keeb)
+set(Taktful_BUILD_CLI OFF CACHE BOOL "" FORCE)
+add_subdirectory(third_party/taktful)
+target_link_libraries(my_app PRIVATE taktful)
 ```
 
 ## Documentation

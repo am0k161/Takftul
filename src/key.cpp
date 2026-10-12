@@ -1,4 +1,4 @@
-#include <keeb/key.h>
+#include <taktful/key.h>
 
 #include "ref_profiles.h"
 
@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 namespace {
 
 const char* k_key_names[25] = {
@@ -157,4 +157,4 @@ KeyResult estimate_key(const std::vector<float>& pcp, const Params& params) {
     return result;
 }
 
-} // namespace keeb
+} // namespace taktful

@@ -1,11 +1,11 @@
-#include <keeb/wav_io.h>
-#include <keeb/mem_io.h>
+#include <taktful/wav_io.h>
+#include <taktful/mem_io.h>
 
 #include <cstdio>
 #include <cstring>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 namespace {
 
 uint16_t rd_u16(const unsigned char* p) {
@@ -244,4 +244,4 @@ WavError load_wav(const char* path, WavData& out) {
     return parse_wav(buf.data(), buf.size(), out);
 }
 
-} // namespace keeb
+} // namespace taktful

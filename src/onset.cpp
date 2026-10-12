@@ -1,10 +1,10 @@
-#include <keeb/onset.h>
+#include <taktful/onset.h>
 
 #include <algorithm>
 #include <cmath>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 
 std::vector<float> compute_onset_envelope(const std::vector<std::vector<float> >& mag_frames,
                                           bool hfc_weight) {
@@ -49,4 +49,4 @@ std::vector<float> compute_onset_envelope(const std::vector<std::vector<float> >
     return env;
 }
 
-} // namespace keeb
+} // namespace taktful

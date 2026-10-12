@@ -1,7 +1,7 @@
-#ifndef KEEB_REF_PROFILES_H
-#define KEEB_REF_PROFILES_H
+#ifndef TAKTFUL_REF_PROFILES_H
+#define TAKTFUL_REF_PROFILES_H
 
-namespace keeb {
+namespace taktful {
 namespace profiles {
 
 /* Krumhansl & Kessler (1982) probe-tone ratings, C major / C minor. */
@@ -35,6 +35,6 @@ static const float temperley2007_minor[12] = {
 };
 
 } // namespace profiles
-} // namespace keeb
+} // namespace taktful
 
 #endif

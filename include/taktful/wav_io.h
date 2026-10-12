@@ -1,11 +1,11 @@
-#ifndef KEEB_WAV_IO_H
-#define KEEB_WAV_IO_H
+#ifndef TAKTFUL_WAV_IO_H
+#define TAKTFUL_WAV_IO_H
 
 #include <cstddef>
 #include <cstdint>
 #include <vector>
 
-namespace keeb {
+namespace taktful {
 
 struct WavData {
     uint32_t sample_rate = 0;
@@ -27,6 +27,6 @@ enum class WavError {
 WavError load_wav(const char* path, WavData& out);
 WavError load_wav_mem(const void* data, std::size_t nbytes, WavData& out);
 
-} // namespace keeb
+} // namespace taktful
 
 #endif

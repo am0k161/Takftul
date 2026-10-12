@@ -1,5 +1,5 @@
-#ifndef KEEB_TEST_WAV_WRITER_H
-#define KEEB_TEST_WAV_WRITER_H
+#ifndef TAKTFUL_TEST_WAV_WRITER_H
+#define TAKTFUL_TEST_WAV_WRITER_H
 
 #include <cstdint>
 #include <cstdio>
@@ -8,7 +8,7 @@
 #include <vector>
 #include <cmath>
 
-namespace keeb {
+namespace taktful {
 namespace test {
 
 inline void wr_u16(std::vector<unsigned char>& b, uint16_t v) {
@@ -201,6 +201,6 @@ inline std::string tmp_path(const char* name) {
 }
 
 } // namespace test
-} // namespace keeb
+} // namespace taktful
 
 #endif

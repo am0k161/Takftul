@@ -1,9 +1,9 @@
-#include <keeb/stream.h>
-#include <keeb/chroma.h>
-#include <keeb/dsp.h>
-#include <keeb/key.h>
-#include <keeb/onset.h>
-#include <keeb/tempo.h>
+#include <taktful/stream.h>
+#include <taktful/chroma.h>
+#include <taktful/dsp.h>
+#include <taktful/key.h>
+#include <taktful/onset.h>
+#include <taktful/tempo.h>
 
 #include <cmath>
 #include <cstddef>
@@ -13,7 +13,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace keeb {
+namespace taktful {
 
 StreamAnalyzer::StreamAnalyzer(const Params& params)
     : params_(params)
@@ -224,4 +224,4 @@ std::vector<AnalysisResult> analyze_sections(const WavData& audio,
     return out;
 }
 
-} // namespace keeb
+} // namespace taktful

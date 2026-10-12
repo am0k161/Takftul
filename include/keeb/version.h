@@ -1,9 +1,0 @@
-#ifndef KEEB_VERSION_H
-#define KEEB_VERSION_H
-
-#define KEEB_VERSION_MAJOR 1
-#define KEEB_VERSION_MINOR 0
-#define KEEB_VERSION_PATCH 1
-#define KEEB_VERSION_STRING "1.0.1"
-
-#endif

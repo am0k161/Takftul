@@ -18,7 +18,7 @@ This document defines the engineering plan for a small, MIT-licensed C++14 libra
 
 The plan is grounded in a survey of five open-source audio-analysis libraries (libKeyFinder, aubio, Essentia, TarsosDSP, Vamp/QM-Vamp) and a study of the underlying published algorithms (Krumhansl–Schmuckler key finding, Temperley's modifications, Harmonic Pitch Class Profile (HPCP) chroma, Ellis dynamic-programming beat tracking, and various onset-detection methods). All surveyed libraries are GPL/AGPL-licensed; their code will not be reused. Their *algorithms* — which are not copyrightable in the United States or EU when implemented from the underlying papers — will be reimplemented cleanly from first principles, using the original academic publications as the source of truth rather than the libraries' source code.
 
-The proposed pipeline is: **WAV decode → downsample → short-time Fourier transform → onset envelope → tempo hypothesis (autocorrelation + Ellis DP beat tracking) → key hypothesis (HPCP chroma aggregation → Krumhansl–Schmuckler with Temperley modifications → ranked key outputs)**. All DSP operates on `float` (32-bit) sample buffers; FFT is provided by a vendored radix-2 Cooley–Tukey implementation that fits in under 200 lines of C++ and supports power-of-two sizes 256–16384. The library exposes a single, dependency-free static library `libkeeb` plus three CLI tools (`analyze_wav`, `bpm_probe`, `key_probe`) for testing and tuning.
+The proposed pipeline is: **WAV decode → downsample → short-time Fourier transform → onset envelope → tempo hypothesis (autocorrelation + Ellis DP beat tracking) → key hypothesis (HPCP chroma aggregation → Krumhansl–Schmuckler with Temperley modifications → ranked key outputs)**. All DSP operates on `float` (32-bit) sample buffers; FFT is provided by a vendored radix-2 Cooley–Tukey implementation that fits in under 200 lines of C++ and supports power-of-two sizes 256–16384. The library exposes a single, dependency-free static library `libtaktful` plus three CLI tools (`analyze_wav`, `bpm_probe`, `key_probe`) for testing and tuning.
 
 Phased delivery is targeted across four milestones (MVP → v0.5 → v1.0 → v1.x), with the MVP covering WAV load + single-pass tempo via autocorrelation within two weeks of work, and v1.0 delivering the full key + tempo pipeline with validated accuracy against the MIREX 2018 tempo dataset and the MTG Key dataset. Total estimated effort: 6–10 person-weeks of focused work.
 
@@ -200,29 +200,29 @@ The matrix below compares each candidate algorithm along the dimensions that mat
 
 ### 6.1 Module layout
 
-The library is divided into six modules. Each module has a public header (in `include/keeb/`) and a private implementation (in `src/`). Modules depend only on modules below them in the list — no circular dependencies.
+The library is divided into six modules. Each module has a public header (in `include/taktful/`) and a private implementation (in `src/`). Modules depend only on modules below them in the list — no circular dependencies.
 
 ```
-keeb::wav_io        WAV decoding + sample format conversion
-keeb::dsp           FFT, windowing, magnitude/phase, log-frequency mapping
-keeb::onset         Spectral flux, peak picking, onset envelope
-keeb::tempo         Autocorrelation + Ellis DP, BPM + confidence
-keeb::chroma        HPCP chroma extraction
-keeb::key           HPCP aggregation + Krumhansl–Schmuckler scoring
-keeb::api           Top-level analyze() entry point, params, results structs
+taktful::wav_io        WAV decoding + sample format conversion
+taktful::dsp           FFT, windowing, magnitude/phase, log-frequency mapping
+taktful::onset         Spectral flux, peak picking, onset envelope
+taktful::tempo         Autocorrelation + Ellis DP, BPM + confidence
+taktful::chroma        HPCP chroma extraction
+taktful::key           HPCP aggregation + Krumhansl–Schmuckler scoring
+taktful::api           Top-level analyze() entry point, params, results structs
 ```
 
 ### 6.2 Directory structure (repo)
 
 ```
-keeb/
+taktful/
 ├── CMakeLists.txt
 ├── Makefile                      # standalone Makefile fallback (no CMake needed)
 ├── README.md
 ├── LICENSE                       # MIT
 ├── include/
-│   └── keeb/
-│       ├── keeb.h                # umbrella include
+│   └── taktful/
+│       ├── taktful.h                # umbrella include
 │       ├── api.h                 # analyze(), Params, Result
 │       ├── wav_io.h
 │       ├── dsp.h
@@ -245,7 +245,7 @@ keeb/
 │   ├── bpm_probe.cpp
 │   └── key_probe.cpp
 ├── third_party/
-│   └── kiss_fft/                 # vendored BSD-3 FFT, only built if KEEB_USE_KISSFFT=ON
+│   └── kiss_fft/                 # vendored BSD-3 FFT, only built if TAKTFUL_USE_KISSFFT=ON
 ├── tests/
 │   ├── unit/
 │   └── golden/                   # WAV + expected JSON pairs
@@ -260,14 +260,14 @@ keeb/
 The API is intentionally minimal: one entry point for the high-level "give me everything" use case, plus lower-level entry points for tracker UIs that want to visualise intermediate stages.
 
 ```cpp
-// include/keeb/api.h
+// include/taktful/api.h
 
 #include <cstdint>
 #include <vector>
 #include <memory>
-#include <keeb/version.h>
+#include <taktful/version.h>
 
-namespace keeb {
+namespace taktful {
 
 // ---- Input ----
 
@@ -372,7 +372,7 @@ struct IntermediateFeatures {
 
 IntermediateFeatures compute_features(const WavData& audio, const Params& params = {});
 
-} // namespace keeb
+} // namespace taktful
 ```
 
 ### 6.4 Data flow
@@ -467,7 +467,7 @@ IntermediateFeatures compute_features(const WavData& audio, const Params& params
 
 **Performance target:** On a 1 GHz Cortex-A7, a 4096-point RFFT should take ≤ 300 µs. With 4-minute audio at 11025 Hz / hop 2048, we have ~1300 FFTs to do → ~400 ms of FFT work. Acceptable.
 
-**Fallback:** If our FFT has correctness issues, vendor `kiss_fft` (BSD-3-Clause). The build system supports `KEEB_FFT=kissfft` to swap implementations.
+**Fallback:** If our FFT has correctness issues, vendor `kiss_fft` (BSD-3-Clause). The build system supports `TAKTFUL_FFT=kissfft` to swap implementations.
 
 ### 7.3 Onset detection (`onset.cpp`)
 
@@ -563,8 +563,8 @@ The following table gives the budget for a "worst case" target file: a 4-minute 
 
 | Resource | Budget | Notes |
 |---|---|---|
-| **Static code size** (libkeeb.a, stripped) | ≤ 200 KB | Goal, not hard limit. Excludes the C++ runtime. |
-| **Static code size** (per-CLI binary, statically linked against libstdc++) | ≤ 800 KB | Includes C++ runtime + libkeeb. |
+| **Static code size** (libtaktful.a, stripped) | ≤ 200 KB | Goal, not hard limit. Excludes the C++ runtime. |
+| **Static code size** (per-CLI binary, statically linked against libstdc++) | ≤ 800 KB | Includes C++ runtime + libtaktful. |
 | **Heap peak** (excluding WavData) | ≤ 2 MB | FFT buffer + onset envelope + chroma matrix. |
 | **Stack usage** | ≤ 8 KB | No deep recursion. FFT is iterative. |
 | **Audio buffer** | ≤ 21 MB (44.1 kHz) / 5 MB (after downsample to 11025 Hz) | Downsample happens in `load_wav` or in `analyze` first step. |
@@ -807,7 +807,7 @@ The roadmap is split into four milestones. Each milestone is shippable: it produ
 
 **Deliverables:**
 - Repo skeleton with the directory structure from §6.2.
-- CMakeLists.txt that builds an empty `libkeeb` static lib.
+- CMakeLists.txt that builds an empty `libtaktful` static lib.
 - Standalone Makefile that does the same.
 - `LICENSE` file (MIT).
 - `README.md` with build instructions.
@@ -875,7 +875,7 @@ The roadmap is split into four milestones. Each milestone is shippable: it produ
 **Goal:** Make the library production-grade for the tracker.
 
 **Deliverables (in priority order):**
-- ARM NEON intrinsics for the FFT, magnitude spectrum, window multiply, and RMS (compile-time `__ARM_NEON`, optional `-DKeeB_ENABLE_NEON=OFF`).
+- ARM NEON intrinsics for the FFT, magnitude spectrum, window multiply, and RMS (compile-time `__ARM_NEON`, optional `-DTaktful_ENABLE_NEON=OFF`).
 - Streaming API: `analyze_streaming(StreamSource&, Params)` that processes chunked audio. Useful for live input.
 - Additional chroma variants: CLP (chroma log pitch) as an alternative to HPCP.
 - Additional key profiles: Temperley 2007, custom user-loadable profiles.
@@ -883,7 +883,7 @@ The roadmap is split into four milestones. Each milestone is shippable: it produ
 - Optional FLAC decode via vendored `dr_flac` (public domain).
 - Optional Ogg/Vorbis decode via vendored `stb_vorbis` (public domain).
 - Fuzzing: libFuzzer on `load_wav` to harden the parser.
-- C API wrapper (`keeb.h` with `extern "C"`) for binding from Rust / Python / Lua.
+- C API wrapper (`taktful.h` with `extern "C"`) for binding from Rust / Python / Lua.
 
 ---
 
@@ -1020,26 +1020,26 @@ The build system supports two paths: CMake (primary) and a hand-written Makefile
 ### 15.1 CMake (primary)
 
 ```bash
-git clone <repo> keeb
-cd keeb
+git clone <repo> taktful
+cd taktful
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DKeeB_BUILD_CLI=ON -DKeeB_BUILD_TESTS=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DTaktful_BUILD_CLI=ON -DTaktful_BUILD_TESTS=ON
 cmake --build . -j
 ctest --output-on-failure
 ```
 
 Options:
-- `-DKeeB_BUILD_CLI=ON` — build the three CLI tools. Default OFF.
-- `-DKeeB_BUILD_TESTS=ON` — build unit + integration tests. Default OFF.
-- `-DKeeB_USE_KISSFFT=ON` — vendor `kiss_fft` instead of using our in-house FFT. Default OFF.
-- `-DKeeB_BUILD_STATIC=ON` — produce `libkeeb.a` instead of `libkeeb.so`. Default ON (we want static for embedding).
+- `-DTaktful_BUILD_CLI=ON` — build the three CLI tools. Default OFF.
+- `-DTaktful_BUILD_TESTS=ON` — build unit + integration tests. Default OFF.
+- `-DTaktful_USE_KISSFFT=ON` — vendor `kiss_fft` instead of using our in-house FFT. Default OFF.
+- `-DTaktful_BUILD_STATIC=ON` — produce `libtaktful.a` instead of `libtaktful.so`. Default ON (we want static for embedding).
 
 ### 15.2 Makefile (fallback)
 
 ```bash
-git clone <repo> keeb
-cd keeb
-make -j lib      # builds libkeeb.a
+git clone <repo> taktful
+cd taktful
+make -j lib      # builds libtaktful.a
 make -j cli      # builds the three CLI binaries
 make -j tests    # builds and runs tests
 ```
@@ -1050,11 +1050,11 @@ The Makefile is hand-written, ~100 lines, with no variables that the user must o
 
 ```cmake
 # In the tracker's CMakeLists.txt:
-add_subdirectory(third_party/keeb)
-target_link_libraries(tracker PRIVATE keeb)
+add_subdirectory(third_party/taktful)
+target_link_libraries(tracker PRIVATE taktful)
 ```
 
-The vendored `keeb` is built statically. The tracker can use either CMake or the Makefile approach above; both produce `libkeeb.a`.
+The vendored `taktful` is built statically. The tracker can use either CMake or the Makefile approach above; both produce `libtaktful.a`.
 
 ---
 

@@ -1,15 +1,15 @@
 #include "utest.h"
 #include "wav_writer.h"
 
-#include <keeb/api.h>
-#include <keeb/c_api.h>
-#include <keeb/chroma.h>
-#include <keeb/dsp.h>
-#include <keeb/key.h>
-#include <keeb/onset.h>
-#include <keeb/stream.h>
-#include <keeb/tempo.h>
-#include <keeb/wav_io.h>
+#include <taktful/api.h>
+#include <taktful/c_api.h>
+#include <taktful/chroma.h>
+#include <taktful/dsp.h>
+#include <taktful/key.h>
+#include <taktful/onset.h>
+#include <taktful/stream.h>
+#include <taktful/tempo.h>
+#include <taktful/wav_io.h>
 
 #include <cmath>
 #include <cstdio>
@@ -17,12 +17,12 @@
 #include <string>
 #include <vector>
 
-using namespace keeb;
-using namespace keeb::test;
+using namespace taktful;
+using namespace taktful::test;
 
 UTEST(wav_io, pcm16_mono) {
     const std::vector<float> src = sine(440.0f, 44100.0f, 0.2f);
-    const std::string path = tmp_path("keeb_pcm16.wav");
+    const std::string path = tmp_path("taktful_pcm16.wav");
     ASSERT_TRUE(write_pcm16_wav(path.c_str(), src, 44100));
     WavData w;
     ASSERT_EQ(load_wav(path.c_str(), w), WavError::OK);
@@ -35,7 +35,7 @@ UTEST(wav_io, pcm16_mono) {
 
 UTEST(wav_io, pcm8_stereo) {
     const std::vector<float> src = sine(220.0f, 8000.0f, 0.1f, 0.8f);
-    const std::string path = tmp_path("keeb_pcm8s.wav");
+    const std::string path = tmp_path("taktful_pcm8s.wav");
     ASSERT_TRUE(write_pcm_wav_bits(path.c_str(), src, 8000, 8, 2, false));
     WavData w;
     ASSERT_EQ(load_wav(path.c_str(), w), WavError::OK);
@@ -46,7 +46,7 @@ UTEST(wav_io, pcm8_stereo) {
 
 UTEST(wav_io, pcm24) {
     const std::vector<float> src = sine(100.0f, 16000.0f, 0.05f);
-    const std::string path = tmp_path("keeb_pcm24.wav");
+    const std::string path = tmp_path("taktful_pcm24.wav");
     ASSERT_TRUE(write_pcm_wav_bits(path.c_str(), src, 16000, 24, 1, false));
     WavData w;
     ASSERT_EQ(load_wav(path.c_str(), w), WavError::OK);
@@ -56,7 +56,7 @@ UTEST(wav_io, pcm24) {
 
 UTEST(wav_io, pcm32) {
     const std::vector<float> src = sine(100.0f, 16000.0f, 0.05f);
-    const std::string path = tmp_path("keeb_pcm32.wav");
+    const std::string path = tmp_path("taktful_pcm32.wav");
     ASSERT_TRUE(write_pcm_wav_bits(path.c_str(), src, 16000, 32, 1, false));
     WavData w;
     ASSERT_EQ(load_wav(path.c_str(), w), WavError::OK);
@@ -65,7 +65,7 @@ UTEST(wav_io, pcm32) {
 
 UTEST(wav_io, float32) {
     const std::vector<float> src = sine(330.0f, 22050.0f, 0.1f);
-    const std::string path = tmp_path("keeb_f32.wav");
+    const std::string path = tmp_path("taktful_f32.wav");
     ASSERT_TRUE(write_pcm_wav_bits(path.c_str(), src, 22050, 32, 1, true));
     WavData w;
     ASSERT_EQ(load_wav(path.c_str(), w), WavError::OK);
@@ -75,11 +75,11 @@ UTEST(wav_io, float32) {
 
 UTEST(wav_io, missing_file) {
     WavData w;
-    ASSERT_EQ(load_wav("/tmp/keeb_does_not_exist.wav", w), WavError::FileNotFound);
+    ASSERT_EQ(load_wav("/tmp/taktful_does_not_exist.wav", w), WavError::FileNotFound);
 }
 
 UTEST(wav_io, not_a_wav) {
-    const char* path = "/tmp/keeb_notwav.bin";
+    const char* path = "/tmp/taktful_notwav.bin";
     FILE* f = std::fopen(path, "wb");
     ASSERT_TRUE(f != 0);
     const char* s = "ID3notawavfileXXXX";
@@ -90,7 +90,7 @@ UTEST(wav_io, not_a_wav) {
 }
 
 UTEST(wav_io, empty_file) {
-    const char* path = "/tmp/keeb_empty.wav";
+    const char* path = "/tmp/taktful_empty.wav";
     FILE* f = std::fopen(path, "wb");
     ASSERT_TRUE(f != 0);
     std::fclose(f);
@@ -490,13 +490,13 @@ UTEST(api, compute_features) {
 }
 
 UTEST(api, version) {
-    ASSERT_EQ(KEEB_VERSION_MAJOR, 1);
-    ASSERT_TRUE(std::strcmp(KEEB_VERSION_STRING, "1.0.1") == 0);
+    ASSERT_EQ(TAKTFUL_VERSION_MAJOR, 1);
+    ASSERT_TRUE(std::strcmp(TAKTFUL_VERSION_STRING, "1.0.1") == 0);
 }
 
 UTEST(wav_io, load_mem_roundtrip) {
     const std::vector<float> src = sine(440.0f, 8000.0f, 0.1f);
-    const std::string path = tmp_path("keeb_mem.wav");
+    const std::string path = tmp_path("taktful_mem.wav");
     ASSERT_TRUE(write_pcm16_wav(path.c_str(), src, 8000));
     FILE* f = std::fopen(path.c_str(), "rb");
     ASSERT_TRUE(f != 0);
@@ -514,7 +514,7 @@ UTEST(wav_io, load_mem_roundtrip) {
 
 UTEST(wav_io, rf64) {
     const std::vector<float> src = sine(220.0f, 8000.0f, 0.2f);
-    const std::string path = tmp_path("keeb_rf64.wav");
+    const std::string path = tmp_path("taktful_rf64.wav");
     ASSERT_TRUE(write_rf64_pcm16(path.c_str(), src, 8000));
     WavData w;
     ASSERT_EQ(load_wav(path.c_str(), w), WavError::OK);
@@ -577,15 +577,15 @@ UTEST(chroma, clp_a4) {
 
 UTEST(c_api, analyze_buffer) {
     std::vector<float> x = triad(261.63f, 329.63f, 392.00f, 11025.0f, 3.0f);
-    keeb_params p;
-    keeb_params_default(&p);
+    taktful_params p;
+    taktful_params_default(&p);
     p.enable_dp_refinement = 0;
     p.apply_pre_filter = 0;
-    keeb_result r;
-    ASSERT_EQ(keeb_analyze_buffer(x.data(), static_cast<uint32_t>(x.size()), 11025, &p, &r), KEEB_OK);
-    ASSERT_TRUE(r.key == KEEB_KEY_C_MAJ || r.key == KEEB_KEY_A_MIN);
-    ASSERT_TRUE(std::strcmp(keeb_version(), "1.0.1") == 0);
-    keeb_result_free(&r);
+    taktful_result r;
+    ASSERT_EQ(taktful_analyze_buffer(x.data(), static_cast<uint32_t>(x.size()), 11025, &p, &r), TAKTFUL_OK);
+    ASSERT_TRUE(r.key == TAKTFUL_KEY_C_MAJ || r.key == TAKTFUL_KEY_A_MIN);
+    ASSERT_TRUE(std::strcmp(taktful_version(), "1.0.1") == 0);
+    taktful_result_free(&r);
 }
 
 UTEST_MAIN()
